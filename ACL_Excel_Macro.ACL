@@ -1,0 +1,80 @@
+@ACL1000
+
+
+^LAYOUT   ACL_Table                          119 D.T,
+CARDNUM        PRINT       1  16 0  
+CREDLIM        PRINT      17   5 0  
+CUSTNO         ASCII      22   6    
+EXPDT          DATETIME   28  19   PICTURE "YYYY-MM-DD"  
+FINCHG         PRINT      47   6 2  
+MINPYMTDUE     PRINT      53   6 2  
+NEWBAL         PRINT      59   7 2  
+PASTDUEAMT     PRINT      66   5 2  
+PMTDUEDT       DATETIME   71  19   PICTURE "YYYY-MM-DD"  
+PREVBAL        PRINT      90   7 2  
+RATE           PRINT      97   4 1  
+STMTDT         DATETIME  101  19   PICTURE "YYYY-MM-DD"  
+^FOLDER   Scripts                             1366229532
+[PARENT_FOLDER_ID] 0
+^FOLDER   Tables                              1366229538
+[PARENT_FOLDER_ID] 0
+^LOGFILE  ACL_Excel_Macro                     "" "ACL_Excel_Macro.LOG"
+[PARENT_FOLDER_ID] 0
+^REPORT   Default_View                       ACL_Table                        D.T,
+[SKIP] 0
+[TLINES] 0
+[RLINES] 1
+[LINE] 1
+CARDNUM              PICTURE ""
+[LINE] 1
+CREDLIM              PICTURE ""
+[LINE] 1
+CUSTNO               PICTURE ""
+[LINE] 1
+EXPDT                PICTURE ""
+[LINE] 1
+FINCHG               PICTURE ""
+[LINE] 1
+MINPYMTDUE           PICTURE ""
+[LINE] 1
+NEWBAL               PICTURE ""
+[LINE] 1
+PASTDUEAMT           WIDTH 10 PICTURE ""
+[LINE] 1
+PMTDUEDT             PICTURE ""
+[LINE] 1
+PREVBAL              PICTURE ""
+[LINE] 1
+RATE                 PICTURE ""
+[LINE] 1
+STMTDT               PICTURE ""
+^FORMAT   ACL_Table                          ACL_Table                        "" "ACL_Table.fil" 0 ASCII 
+[PARENT_FOLDER_ID] 1366229538
+[LASTVIEW] "Default_View"
+[RETRIEVE] 0
+[REFRESH] EXCEL "C:\ACL DATA\ACLContest\ACL_Table.fil" FROM "C:\ACL DATA\Sample Data Files\Credit_Cards_Metaphor.xls" TABLE "Corp_Credit_Cards$" KEEPTITLE FIELD "CARDNUM" N WID 16 DEC 0 AS "" FIELD "CREDLIM" N WID 5 DEC 0 AS "" FIELD "CUSTNO" C WID 6 AS "" FIELD "EXPDT" D WID 19 PIC "YYYY-MM-DD" AS "" FIELD "FINCHG" N WID 6 DEC 2 AS "" FIELD "MINPYMTDUE" N WID 6 DEC 2 AS "" FIELD "NEWBAL" N WID 7 DEC 2 AS "" FIELD "PASTDUEAMT" N WID 5 DEC 2 AS "" FIELD "PMTDUEDT" D WID 19 PIC "YYYY-MM-DD" AS "" FIELD "PREVBAL" N WID 7 DEC 2 AS "" FIELD "RATE" N WID 4 DEC 1 AS "" FIELD "STMTDT" D WID 19 PIC "YYYY-MM-DD" AS ""
+
+^BATCH    ExcelMacro                         
+[PARENT_FOLDER_ID] 1366229532
+COM 
+****************************************************************************************
+*** Script Name: ExcelMacro 
+*** Description: This script Exports to Excel and applies an Excel Macro to the file.
+***
+*** Written By:  Kevin Legere, June 10th, 2013
+****************************************************************************************
+
+   SET SAFETY OFF
+   CLOSE PRI SEC
+
+COM *** Open ACL_Table and export to Excel
+
+   OPEN ACL_Table
+   EXPORT FIELDS CARDNUM CREDLIM CUSTNO EXPDT FINCHG MINPYMTDUE NEWBAL OUTPUTFOLDER PASTDUEAMT PMTDUEDT PREVBAL RATE STMTDT XLSX TO "Excel_File"
+
+COM *** Excecute external VBS to copy Excel Macro to Excel File
+
+   EXECUTE 'cmd /c "ExcelMacro.vbs"'
+
+   SET SAFETY ON
+^OPEN F "ACL_Table"
